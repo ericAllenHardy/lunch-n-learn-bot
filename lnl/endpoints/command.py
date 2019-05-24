@@ -1,6 +1,6 @@
 from flask import jsonify
 from flask_restplus import Resource, reqparse
-from lnl.app_core import api
+from lnl.app_core import api, spreadsheet
 
 class CommandHandler(Resource):
     COMMAND_NAME = '/lunch-n-learn'
@@ -22,7 +22,24 @@ class CommandHandler(Resource):
             return '' 
 
         subCommand = self._subCommand(args)
-        if subCommand == 'hello':
+
+        if subCommand == 'authorize':
+            if spreadsheet.isEnabled:
+                return jsonify({
+                  "text": "Already done. Go ahead and plan some lunches!"
+                })
+            (authUrl, _) = spreadsheet.authorizationUrl()
+            connectGoogle = {
+              "type": "section"
+            , "text": {
+                  "type": "mrkdwn"
+                , "text": "Click <{}|here> to connect LnL to  Google Sheets".format(authUrl)
+                }
+            }
+            return jsonify({
+              'blocks': [connectGoogle]
+            })
+        elif subCommand == 'hello':
             return jsonify({
               "text": "Hi! Nice to meet you"
             }) 

@@ -1,0 +1,5 @@
+TODO
+- persist google credentials across sessions
+- make a spreadsheet
+- edit spreadsheet
+- make channel about lnl events
